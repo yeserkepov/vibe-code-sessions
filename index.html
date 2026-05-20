@@ -421,15 +421,26 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 1.5rem;
-      transition: all 0.3s;
-      cursor: default;
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      cursor: pointer;
     }
 
     .project-card:hover {
       border-color: rgba(6,182,212,0.4);
-      transform: translateY(-3px);
       box-shadow: 0 15px 50px rgba(0,0,0,0.25), 0 0 30px rgba(6,182,212,0.08);
+    }
+
+    .project-card.open {
+      border-color: rgba(6,182,212,0.5);
+      box-shadow: 0 0 40px rgba(6,182,212,0.1);
+    }
+
+    .project-summary {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
     }
 
     .project-header {
@@ -444,9 +455,31 @@
       font-weight: 700;
     }
 
+    .project-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
     .difficulty {
       font-size: 0.75rem;
       letter-spacing: 0.03em;
+    }
+
+    .project-chevron {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+
+    .project-card.open .project-chevron {
+      transform: rotate(180deg);
+      color: var(--accent2);
     }
 
     .project-result {
@@ -467,6 +500,78 @@
       border: 1px solid rgba(6,182,212,0.2);
       padding: 0.2rem 0.6rem;
       border-radius: 6px;
+    }
+
+    /* ── ACCORDION GUIDE ── */
+    .project-guide {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .project-card.open .project-guide {
+      max-height: 2000px;
+    }
+
+    .guide-inner {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .guide-step {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .guide-step-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .guide-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--accent), #5b21b6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .guide-step-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .guide-prompt {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      font-size: 0.78rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #c4d0e3;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .guide-note {
+      font-size: 0.78rem;
+      color: var(--accent3);
+      padding: 0.5rem 0.75rem;
+      background: rgba(16,185,129,0.07);
+      border: 1px solid rgba(16,185,129,0.15);
+      border-radius: 8px;
     }
 
     /* ── PROMPTS SECTION ── */
@@ -851,77 +956,404 @@
   <p class="section-desc">8 вариантов с мини-гайдами. Каждый — пошаговые промпты от нуля до готового результата.</p>
 
   <div class="projects-grid">
-    <div class="project-card fade-up">
-      <div class="project-header">
-        <div class="project-name">Личная страница-визитка</div>
-        <div class="difficulty">⭐</div>
+
+    <!-- 1. Визитка -->
+    <div class="project-card fade-up" onclick="toggleProject(this)">
+      <div class="project-summary">
+        <div class="project-header">
+          <div class="project-name">Личная страница-визитка</div>
+          <div class="project-right">
+            <div class="difficulty">⭐</div>
+            <div class="project-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          </div>
+        </div>
+        <div class="project-result">HTML файл с твоим именем, фото, ссылками. Открывается в браузере, можно выложить онлайн.</div>
+        <div class="project-tech">HTML + CSS</div>
       </div>
-      <div class="project-result">HTML файл с твоим именем, фото, ссылками. Открывается в браузере, можно выложить онлайн.</div>
-      <div class="project-tech">HTML + CSS</div>
+      <div class="project-guide">
+        <div class="guide-inner">
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">1</div><div class="guide-step-title">Базовая структура</div></div>
+            <div class="guide-prompt">Создай одностраничный HTML файл — личная визитка.
+Моё имя: [ИМЯ], должность: [ТЕКСТ], email: [EMAIL].
+Стиль: тёмный фон, белый текст, минималистично, по центру.
+Без внешних библиотек — только HTML и CSS в одном файле.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">2</div><div class="guide-step-title">Фото / аватар</div></div>
+            <div class="guide-prompt">Добавь круглый аватар в верх страницы.
+Пока используй placeholder с via.placeholder.com размером 150x150.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">3</div><div class="guide-step-title">Ссылки на соцсети</div></div>
+            <div class="guide-prompt">Добавь кнопки-иконки для Telegram, Instagram и LinkedIn.
+Используй emoji как иконки (✈️ 📸 💼). Ссылки пока пустые (#).
+Кнопки в ряд, с отступами.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">4</div><div class="guide-step-title">Анимация</div></div>
+            <div class="guide-prompt">Добавь плавное появление контента при загрузке (fade in через CSS).
+Hover эффект на кнопки — лёгкое увеличение при наведении.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">5</div><div class="guide-step-title">Мобильная версия</div></div>
+            <div class="guide-prompt">Сделай страницу адаптивной для мобильного.
+Проверь что на ширине 375px всё читается и не вылезает за края.</div>
+          </div>
+          <div class="guide-note">Деплой: перетащи файл на netlify.com/drop — получишь ссылку за 10 секунд.</div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-card fade-up">
-      <div class="project-header">
-        <div class="project-name">Генератор рецептов</div>
-        <div class="difficulty">⭐</div>
+    <!-- 2. Рецепты -->
+    <div class="project-card fade-up" onclick="toggleProject(this)">
+      <div class="project-summary">
+        <div class="project-header">
+          <div class="project-name">Генератор рецептов</div>
+          <div class="project-right">
+            <div class="difficulty">⭐</div>
+            <div class="project-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          </div>
+        </div>
+        <div class="project-result">Вводишь ингредиенты — получаешь рецепт. Фильтры по диете, избранное, красивый вывод.</div>
+        <div class="project-tech">Python CLI</div>
       </div>
-      <div class="project-result">Вводишь ингредиенты — получаешь рецепт. Фильтры по диете, избранное, красивый вывод.</div>
-      <div class="project-tech">Python CLI</div>
+      <div class="project-guide">
+        <div class="guide-inner">
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">1</div><div class="guide-step-title">Базовый генератор</div></div>
+            <div class="guide-prompt">Создай Python скрипт recipe_generator.py.
+Спрашивает: "Какие ингредиенты у тебя есть? (через запятую)"
+Выбирает случайный рецепт из встроенного списка где есть хотя бы 2 введённых ингредиента.
+Добавь 10 рецептов прямо в код.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">2</div><div class="guide-step-title">Красивый вывод</div></div>
+            <div class="guide-prompt">Рецепт выводить красиво:
+- Название большими буквами
+- Ингредиенты с галочками ✓
+- Шаги пронумерованно
+- Время приготовления</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">3</div><div class="guide-step-title">Фильтр по диете</div></div>
+            <div class="guide-prompt">Добавь вопрос "Есть ли ограничения?" с вариантами:
+1 — без ограничений, 2 — вегетарианское, 3 — без глютена.
+Пометь каждый рецепт тегами в коде.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">4</div><div class="guide-step-title">Избранное</div></div>
+            <div class="guide-prompt">После показа рецепта спроси "Добавить в избранное? (y/n)"
+Если да — сохрани в файл favorites.txt.
+Если ввести "избранное" при старте — показать сохранённые.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">5</div><div class="guide-step-title">Главное меню</div></div>
+            <div class="guide-prompt">Сделай меню при запуске:
+1. Найти рецепт по ингредиентам
+2. Случайный рецепт
+3. Мои избранные
+4. Выход
+Цикл — меню показывается снова после каждого действия.</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-card fade-up">
-      <div class="project-header">
-        <div class="project-name">Таблица расходов</div>
-        <div class="difficulty">⭐</div>
+    <!-- 3. Расходы -->
+    <div class="project-card fade-up" onclick="toggleProject(this)">
+      <div class="project-summary">
+        <div class="project-header">
+          <div class="project-name">Таблица расходов</div>
+          <div class="project-right">
+            <div class="difficulty">⭐</div>
+            <div class="project-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          </div>
+        </div>
+        <div class="project-result">Записываешь расходы, видишь статистику по категориям, экспортируешь отчёт.</div>
+        <div class="project-tech">Python + CSV</div>
       </div>
-      <div class="project-result">Записываешь расходы, видишь статистику по категориям, экспортируешь отчёт.</div>
-      <div class="project-tech">Python + CSV</div>
+      <div class="project-guide">
+        <div class="guide-inner">
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">1</div><div class="guide-step-title">Запись расхода</div></div>
+            <div class="guide-prompt">Создай Python скрипт budget.py.
+Спрашивает: сумму, категорию (еда/транспорт/развлечения/другое), описание.
+Сохраняет в expenses.csv с датой и временем.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">2</div><div class="guide-step-title">Просмотр расходов</div></div>
+            <div class="guide-prompt">Добавь просмотр всех расходов.
+Таблица: дата | категория | сумма | описание.
+В конце — итого за всё время.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">3</div><div class="guide-step-title">Фильтры</div></div>
+            <div class="guide-prompt">Добавь фильтрацию:
+- По категории
+- За текущий месяц
+- За последние N дней (пользователь вводит число)</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">4</div><div class="guide-step-title">Статистика</div></div>
+            <div class="guide-prompt">Добавь команду "статистика":
+- Топ-3 категории по расходам
+- Средний расход в день за 30 дней
+- Самая дорогая покупка</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">5</div><div class="guide-step-title">Отчёт</div></div>
+            <div class="guide-prompt">Генерация report.txt:
+- Итоги за текущий месяц по категориям
+- Сравнение с прошлым месяцем (больше/меньше на сколько %)</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-card fade-up">
-      <div class="project-header">
-        <div class="project-name">Мини Landing Page</div>
-        <div class="difficulty">⭐</div>
+    <!-- 4. Landing -->
+    <div class="project-card fade-up" onclick="toggleProject(this)">
+      <div class="project-summary">
+        <div class="project-header">
+          <div class="project-name">Мини Landing Page</div>
+          <div class="project-right">
+            <div class="difficulty">⭐</div>
+            <div class="project-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          </div>
+        </div>
+        <div class="project-result">Красивая страница для твоей идеи или продукта. Анимации, мобильная версия, форма подписки.</div>
+        <div class="project-tech">HTML + CSS + JS</div>
       </div>
-      <div class="project-result">Красивая страница для твоей идеи или продукта. Анимации, мобильная версия, форма подписки.</div>
-      <div class="project-tech">HTML + CSS + JS</div>
+      <div class="project-guide">
+        <div class="guide-inner">
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">1</div><div class="guide-step-title">Структура</div></div>
+            <div class="guide-prompt">Создай одностраничный HTML landing page для [ИДЕЯ].
+Структура: шапка с навигацией, hero секция с CTA, секция "Преимущества" (3 карточки с emoji), футер.
+Стиль: современный, [ЦВЕТ] акцент, белый фон. Только HTML+CSS, один файл.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">2</div><div class="guide-step-title">Hero секция</div></div>
+            <div class="guide-prompt">Hero сделай впечатляющим:
+- Градиентный фон
+- Анимированный заголовок (появляется слайдом снизу)
+- Кнопка CTA с hover эффектом и тенью
+- Подпись: "Уже X человек попробовали"</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">3</div><div class="guide-step-title">How it works</div></div>
+            <div class="guide-prompt">Добавь секцию "Как это работает" — 3 шага пронумерованно:
+иконка-номер, заголовок, описание.
+Горизонтальная линия соединяет шаги на desktop.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">4</div><div class="guide-step-title">Форма подписки</div></div>
+            <div class="guide-prompt">Секция "Получить ранний доступ": поле email, кнопка.
+При клике показать alert "Спасибо! Мы свяжемся с вами".
+Только frontend, без сервера.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">5</div><div class="guide-step-title">Мобильная версия</div></div>
+            <div class="guide-prompt">Добавь hamburger меню для мобильного.
+Карточки и шаги — в столбик на экранах меньше 768px.
+Протестируй при ширине 375px.</div>
+          </div>
+          <div class="guide-note">Деплой: netlify.com/drop — перетащи файл, получи ссылку.</div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-card fade-up">
-      <div class="project-header">
-        <div class="project-name">Переименование файлов</div>
-        <div class="difficulty">⭐⭐</div>
+    <!-- 5. Переименование -->
+    <div class="project-card fade-up" onclick="toggleProject(this)">
+      <div class="project-summary">
+        <div class="project-header">
+          <div class="project-name">Переименование файлов</div>
+          <div class="project-right">
+            <div class="difficulty">⭐⭐</div>
+            <div class="project-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          </div>
+        </div>
+        <div class="project-result">Скрипт берёт папку и переименовывает файлы по правилу. Предпросмотр, подтверждение, лог.</div>
+        <div class="project-tech">Python</div>
       </div>
-      <div class="project-result">Скрипт берёт папку и переименовывает файлы по правилу. Предпросмотр, подтверждение, лог.</div>
-      <div class="project-tech">Python</div>
+      <div class="project-guide">
+        <div class="guide-inner">
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">1</div><div class="guide-step-title">Список файлов</div></div>
+            <div class="guide-prompt">Создай Python скрипт rename_files.py.
+Спрашивает путь к папке.
+Выводит список всех файлов в ней.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">2</div><div class="guide-step-title">Нумерация</div></div>
+            <div class="guide-prompt">Добавь нумерацию в начало каждого файла.
+Пример: "фото.jpg" → "001_фото.jpg"
+Сортировать по алфавиту перед нумерацией.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">3</div><div class="guide-step-title">Предпросмотр</div></div>
+            <div class="guide-prompt">Перед переименованием покажи список: что было → что станет.
+Спроси подтверждение (y/n) прежде чем применять.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">4</div><div class="guide-step-title">Фильтр по типу</div></div>
+            <div class="guide-prompt">Пользователь вводит расширение (например .jpg или .pdf).
+Скрипт переименовывает только файлы с этим расширением.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">5</div><div class="guide-step-title">Лог</div></div>
+            <div class="guide-prompt">После переименования сохрани лог в rename_log.txt:
+дата, папка, список изменений (старое имя → новое имя).</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-card fade-up">
-      <div class="project-header">
-        <div class="project-name">Телеграм-бот</div>
-        <div class="difficulty">⭐⭐</div>
+    <!-- 6. Телеграм-бот -->
+    <div class="project-card fade-up" onclick="toggleProject(this)">
+      <div class="project-summary">
+        <div class="project-header">
+          <div class="project-name">Телеграм-бот</div>
+          <div class="project-right">
+            <div class="difficulty">⭐⭐</div>
+            <div class="project-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          </div>
+        </div>
+        <div class="project-result">Бот отвечает на команды, выдаёт случайные факты, запоминает имя пользователя.</div>
+        <div class="project-tech">Python + Telegram API</div>
       </div>
-      <div class="project-result">Бот отвечает на команды, выдаёт случайные факты, запоминает имя пользователя.</div>
-      <div class="project-tech">Python + Telegram API</div>
+      <div class="project-guide">
+        <div class="guide-inner">
+          <div class="guide-note">Сначала: напиши @BotFather в Telegram → /newbot → получи токен.</div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">1</div><div class="guide-step-title">Эхо-бот</div></div>
+            <div class="guide-prompt">Создай Python телеграм-бот (python-telegram-bot v20+).
+Токен: [ТОКЕН ОТ BOTFATHER]
+Получает текст → отвечает тем же текстом.
+Команда /start с приветствием.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">2</div><div class="guide-step-title">Установка и запуск</div></div>
+            <div class="guide-prompt">Напиши команду для установки нужных библиотек и как запустить бота.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">3</div><div class="guide-step-title">Случайные факты</div></div>
+            <div class="guide-prompt">Добавь команду /fact — бот отвечает случайным интересным фактом.
+Список из 15 фактов прямо в коде (не нужен внешний API).</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">4</div><div class="guide-step-title">/help</div></div>
+            <div class="guide-prompt">Добавь /help — показывает список всех команд с описанием.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">5</div><div class="guide-step-title">Запоминание имени</div></div>
+            <div class="guide-prompt">Команда /setname — пользователь вводит имя, бот запоминает
+и обращается по имени в следующих сообщениях.
+Хранить в словаре в памяти (база данных не нужна).</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-card fade-up">
-      <div class="project-header">
-        <div class="project-name">Квиз в терминале</div>
-        <div class="difficulty">⭐⭐</div>
+    <!-- 7. Квиз -->
+    <div class="project-card fade-up" onclick="toggleProject(this)">
+      <div class="project-summary">
+        <div class="project-header">
+          <div class="project-name">Квиз в терминале</div>
+          <div class="project-right">
+            <div class="difficulty">⭐⭐</div>
+            <div class="project-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          </div>
+        </div>
+        <div class="project-result">Викторина на любую тему. Таймер, подсказки, таблица рекордов, уровни сложности.</div>
+        <div class="project-tech">Python CLI</div>
       </div>
-      <div class="project-result">Викторина на любую тему. Таймер, подсказки, таблица рекордов, уровни сложности.</div>
-      <div class="project-tech">Python CLI</div>
+      <div class="project-guide">
+        <div class="guide-inner">
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">1</div><div class="guide-step-title">Базовый квиз</div></div>
+            <div class="guide-prompt">Создай Python скрипт quiz.py — викторина в терминале.
+Тема: [ИСТОРИЯ / ГЕОГРАФИЯ / КИНО / НАУКА]
+10 вопросов, 4 варианта (a/b/c/d).
+В конце: счёт X из 10.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">2</div><div class="guide-step-title">Таймер</div></div>
+            <div class="guide-prompt">Таймер 15 секунд на каждый вопрос.
+Если время вышло — вопрос засчитывается как неправильный.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">3</div><div class="guide-step-title">Подсказки</div></div>
+            <div class="guide-prompt">У каждого вопроса одна подсказка.
+Игрок запрашивает подсказку (введя "?") но теряет половину очка за вопрос.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">4</div><div class="guide-step-title">Таблица рекордов</div></div>
+            <div class="guide-prompt">После квиза спроси имя игрока.
+Сохрани результат в leaderboard.txt.
+При старте показывать топ-5 лучших результатов.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">5</div><div class="guide-step-title">Уровни сложности</div></div>
+            <div class="guide-prompt">При старте выбор:
+1 — лёгкий (5 вопросов, без таймера)
+2 — средний (10 вопросов, 20 сек)
+3 — сложный (15 вопросов, 10 сек)</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-card fade-up">
-      <div class="project-header">
-        <div class="project-name">Скачивание картинок</div>
-        <div class="difficulty">⭐⭐</div>
+    <!-- 8. Скачивание картинок -->
+    <div class="project-card fade-up" onclick="toggleProject(this)">
+      <div class="project-summary">
+        <div class="project-header">
+          <div class="project-name">Скачивание картинок</div>
+          <div class="project-right">
+            <div class="difficulty">⭐⭐</div>
+            <div class="project-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          </div>
+        </div>
+        <div class="project-result">Читает список URL, скачивает файлы, фильтрует по типу, создаёт отчёт.</div>
+        <div class="project-tech">Python + requests</div>
       </div>
-      <div class="project-result">Читает список URL, скачивает файлы, фильтрует по типу, создаёт отчёт.</div>
-      <div class="project-tech">Python + requests</div>
+      <div class="project-guide">
+        <div class="guide-inner">
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">1</div><div class="guide-step-title">Базовый скачиватель</div></div>
+            <div class="guide-prompt">Создай Python скрипт downloader.py.
+Читает urls.txt (каждая строка — один URL).
+Скачивает каждую картинку в папку downloads/.
+Показывает прогресс: "Скачиваю 1 из 10: [url]"</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">2</div><div class="guide-step-title">Умные имена файлов</div></div>
+            <div class="guide-prompt">При сохранении: брать имя из URL.
+Если имя уже существует — добавить номер: photo.jpg → photo_1.jpg
+Если имя нечитаемое — image_001.jpg, image_002.jpg и т.д.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">3</div><div class="guide-step-title">Фильтр по типу</div></div>
+            <div class="guide-prompt">Пользователь вводит типы файлов через запятую (jpg,png,gif).
+Скачивать только файлы указанных типов, остальные пропускать.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">4</div><div class="guide-step-title">Отчёт</div></div>
+            <div class="guide-prompt">После скачивания показать итог:
+- Успешно: N файлов
+- Ошибок: N файлов
+Сохранить отчёт в download_log.txt.</div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-header"><div class="guide-num">5</div><div class="guide-step-title">Ограничение скорости</div></div>
+            <div class="guide-prompt">Пауза 1 секунда между скачиваниями (не перегружать сервер).
+Пользователь может указать задержку (по умолчанию 1).
+Показывать оставшееся время.</div>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 </section>
 
@@ -1022,6 +1454,11 @@
   );
 
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Project accordion
+  function toggleProject(card) {
+    card.classList.toggle('open');
+  }
 
   // Smooth nav highlight
   const sections = document.querySelectorAll('section[id], div[id="register"]');
