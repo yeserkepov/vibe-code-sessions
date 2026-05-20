@@ -1460,9 +1460,35 @@ Hover эффект на кнопки — лёгкое увеличение пр�
 
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-  // Project accordion
+  // Project accordion with FLIP animation
   function toggleProject(card) {
+    const cards = [...document.querySelectorAll('.project-card')];
+
+    // FIRST: record positions before change
+    const first = cards.map(c => c.getBoundingClientRect());
+
+    // Apply change
     card.classList.toggle('open');
+
+    // LAST: measure new positions, then animate from old → new
+    requestAnimationFrame(() => {
+      cards.forEach((c, i) => {
+        const last = c.getBoundingClientRect();
+        const dx = first[i].left - last.left;
+        const dy = first[i].top  - last.top;
+        if (dx === 0 && dy === 0) return;
+
+        // snap to old position instantly
+        c.style.transition = 'none';
+        c.style.transform  = `translate(${dx}px, ${dy}px)`;
+
+        // then animate to natural position
+        requestAnimationFrame(() => {
+          c.style.transition = 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
+          c.style.transform  = '';
+        });
+      });
+    });
   }
 
   // Smooth nav highlight
