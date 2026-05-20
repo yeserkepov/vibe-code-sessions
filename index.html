@@ -434,6 +434,7 @@
     .project-card.open {
       border-color: rgba(6,182,212,0.5);
       box-shadow: 0 0 40px rgba(6,182,212,0.1);
+      grid-column: 1 / -1;
     }
 
     .project-summary {
@@ -516,9 +517,13 @@
     .guide-inner {
       border-top: 1px solid var(--border);
       padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 1rem;
+    }
+
+    .guide-inner .guide-note {
+      grid-column: 1 / -1;
     }
 
     .guide-step {
